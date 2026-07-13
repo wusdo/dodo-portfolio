@@ -161,13 +161,18 @@ header.bar {
   position: absolute; left: clamp(20px, 4vw, 48px); right: clamp(20px, 4vw, 48px); bottom: clamp(24px, 5vh, 56px);
   z-index: 2;
 }
-.hero .eyebrow { color: var(--tungsten); margin-bottom: 10px; }
+.hero .eyebrow { color: var(--tungsten); margin-bottom: clamp(18px, 3vh, 34px); }
 .hero h1 {
   margin: 0; font-family: var(--display); font-weight: 800;
-  font-size: clamp(56px, 12vw, 168px); line-height: .88; letter-spacing: .01em;
+  font-size: clamp(56px, 12vw, 168px); line-height: .92; letter-spacing: .01em;
   text-transform: uppercase; text-wrap: balance;
 }
 .hero h1 .thin { color: transparent; -webkit-text-stroke: 1.5px var(--bone); }
+.hero h1 .dodo {
+  font-family: var(--mono); font-weight: 400; text-transform: lowercase;
+  font-size: clamp(13px, 1.8vw, 22px); letter-spacing: .18em; color: var(--tungsten);
+  -webkit-text-stroke: 0; vertical-align: clamp(28px, 6vw, 92px); margin-left: 8px; white-space: nowrap;
+}
 .hero .sub {
   display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 18px; color: var(--dim);
 }
@@ -206,7 +211,7 @@ section { padding: clamp(56px, 9vh, 104px) clamp(20px, 4vw, 48px); }
 /* klaket satırı */
 .slate { padding: 14px 2px 0; }
 .slate-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-.slate .client { font-family: var(--mono); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--tungsten); }
+.slate .client { font-family: var(--mono); font-size: 14.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--tungsten); }
 .slate .watch {
   font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
   color: var(--dim); opacity: 0; transform: translateX(-4px); transition: opacity .25s, transform .25s, color .25s;
@@ -220,19 +225,28 @@ section { padding: clamp(56px, 9vh, 104px) clamp(20px, 4vw, 48px); }
 .slate .meta { font-family: var(--mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); display: flex; gap: 8px; flex-wrap: wrap; }
 .slate .tick { color: var(--hair); }
 
-/* ── Müşteri duvarı ── */
+/* ── Müşteri şeridi: yavaş kayan logolu marka bandı ── */
 .clients-wrap { max-width: 1280px; margin: 0 auto; }
-ul.clients {
-  list-style: none; margin: 0; padding: 0;
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+.marquee {
+  overflow: hidden; padding: clamp(16px, 3vh, 32px) 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
 }
-ul.clients li {
+.marquee-track { display: flex; width: max-content; animation: marq 90s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+.marquee-half { display: flex; align-items: center; gap: clamp(44px, 6vw, 80px); padding-right: clamp(44px, 6vw, 80px); }
+.brand { display: inline-flex; align-items: center; gap: 16px; white-space: nowrap; }
+.brand .chip {
+  width: 46px; height: 46px; flex: none; border-radius: 10px;
+  background: var(--bone); display: grid; place-items: center;
+}
+.brand .chip img { width: 34px; height: 34px; object-fit: contain; border-radius: 7px; }
+.brand .bname {
   font-family: var(--display); font-weight: 700; text-transform: uppercase;
-  font-size: clamp(26px, 3.4vw, 40px); line-height: 1.05; letter-spacing: .02em;
-  padding: 20px 8px; border-bottom: 1px solid var(--hair); color: var(--dim);
-  transition: color .25s, padding-left .25s;
+  font-size: clamp(26px, 3vw, 36px); letter-spacing: .02em; color: var(--dim);
 }
-ul.clients li:hover { color: var(--bone); padding-left: 16px; }
+.brand:hover .bname { color: var(--bone); }
+@keyframes marq { to { transform: translateX(-50%); } }
 .clients-note { margin-top: 28px; color: var(--dim); max-width: 62ch; }
 .clients-note b { color: var(--bone); font-weight: 500; }
 
@@ -251,8 +265,10 @@ footer h2 a:hover { color: var(--tungsten); }
 .foot-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 32px; color: var(--dim); }
 
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
+  * { transition: none !important; animation: none !important; }
   html { scroll-behavior: auto; }
+  .marquee-track { flex-wrap: wrap; width: auto; }
+  .marquee-half[aria-hidden] { display: none; }
 }
 </style>
 </head>
@@ -275,7 +291,7 @@ footer h2 a:hover { color: var(--tungsten); }
   </video>
   <div class="titleblock">
     <div class="eyebrow mono">Görüntü Yönetmeni / Director of Photography</div>
-    <h1>Doğukan <span class="thin">İnce</span></h1>
+    <h1>Doğukan <span class="thin">İnce</span><span class="dodo">(dodo)</span></h1>
     <div class="sub">
       <span class="mono"><b>Reklam · Marka Filmi · TVC</b></span>
       <span class="mono">Film: Turkish Airlines “The Seas of Türkiye”</span>
@@ -892,32 +908,62 @@ footer h2 a:hover { color: var(--tungsten); }
       <h2>Müşteriler</h2>
       <span class="count mono">Markalar &amp; İş Birlikleri</span>
     </div>
-    <ul class="clients">
-<li>Turkish Airlines</li>
-<li>Mercedes-Benz</li>
-<li>Spotify</li>
-<li>National Geographic</li>
-<li>Samsung</li>
-<li>Eti</li>
-<li>Ziraat Bankası</li>
-<li>Digiturk</li>
-<li>La Roche-Posay</li>
-<li>beIN Sports</li>
-<li>DS Automobiles</li>
-<li>Castrol</li>
-<li>TRT</li>
-<li>Sana</li>
-<li>Türknet</li>
-<li>Kızılay</li>
-<li>Akkök Holding</li>
-<li>Acar Home</li>
-<li>Renax</li>
-<li>Şahin Sucukları</li>
-<li>Servis Plan</li>
-<li>İstanbul Çiğ Köfte</li>
-<li>TV8</li>
-<li>Pelaçık</li>
-    </ul>
+<div class="marquee">
+<div class="marquee-track">
+<div class="marquee-half">
+<span class="brand"><span class="chip"><img src="img/logos/thy.png" alt="Turkish Airlines logosu"></span><span class="bname">Turkish Airlines</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/mercedes.png" alt="Mercedes-Benz logosu"></span><span class="bname">Mercedes-Benz</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/spotify.png" alt="Spotify logosu"></span><span class="bname">Spotify</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/natgeo.png" alt="National Geographic logosu"></span><span class="bname">National Geographic</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/samsung.png" alt="Samsung logosu"></span><span class="bname">Samsung</span></span>
+<span class="brand"><span class="bname">Eti</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/ziraat.png" alt="Ziraat Bankası logosu"></span><span class="bname">Ziraat Bankası</span></span>
+<span class="brand"><span class="bname">Digiturk</span></span>
+<span class="brand"><span class="bname">La Roche-Posay</span></span>
+<span class="brand"><span class="bname">beIN Sports</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/ds.png" alt="DS Automobiles logosu"></span><span class="bname">DS Automobiles</span></span>
+<span class="brand"><span class="bname">Castrol</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/d_trt.png" alt="TRT logosu"></span><span class="bname">TRT</span></span>
+<span class="brand"><span class="bname">Sana</span></span>
+<span class="brand"><span class="bname">Türknet</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/kizilay.png" alt="Kızılay logosu"></span><span class="bname">Kızılay</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/akkok.png" alt="Akkök Holding logosu"></span><span class="bname">Akkök Holding</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/acarhome.png" alt="Acar Home logosu"></span><span class="bname">Acar Home</span></span>
+<span class="brand"><span class="bname">Renax</span></span>
+<span class="brand"><span class="bname">Şahin Sucukları</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/servisplan.png" alt="Servis Plan logosu"></span><span class="bname">Servis Plan</span></span>
+<span class="brand"><span class="bname">İstanbul Çiğ Köfte</span></span>
+<span class="brand"><span class="bname">TV8</span></span>
+<span class="brand"><span class="bname">Pelaçık</span></span>
+</div>
+<div class="marquee-half" aria-hidden="true">
+<span class="brand"><span class="chip"><img src="img/logos/thy.png" alt="Turkish Airlines logosu"></span><span class="bname">Turkish Airlines</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/mercedes.png" alt="Mercedes-Benz logosu"></span><span class="bname">Mercedes-Benz</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/spotify.png" alt="Spotify logosu"></span><span class="bname">Spotify</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/natgeo.png" alt="National Geographic logosu"></span><span class="bname">National Geographic</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/samsung.png" alt="Samsung logosu"></span><span class="bname">Samsung</span></span>
+<span class="brand"><span class="bname">Eti</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/ziraat.png" alt="Ziraat Bankası logosu"></span><span class="bname">Ziraat Bankası</span></span>
+<span class="brand"><span class="bname">Digiturk</span></span>
+<span class="brand"><span class="bname">La Roche-Posay</span></span>
+<span class="brand"><span class="bname">beIN Sports</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/ds.png" alt="DS Automobiles logosu"></span><span class="bname">DS Automobiles</span></span>
+<span class="brand"><span class="bname">Castrol</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/d_trt.png" alt="TRT logosu"></span><span class="bname">TRT</span></span>
+<span class="brand"><span class="bname">Sana</span></span>
+<span class="brand"><span class="bname">Türknet</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/kizilay.png" alt="Kızılay logosu"></span><span class="bname">Kızılay</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/akkok.png" alt="Akkök Holding logosu"></span><span class="bname">Akkök Holding</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/acarhome.png" alt="Acar Home logosu"></span><span class="bname">Acar Home</span></span>
+<span class="brand"><span class="bname">Renax</span></span>
+<span class="brand"><span class="bname">Şahin Sucukları</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/servisplan.png" alt="Servis Plan logosu"></span><span class="bname">Servis Plan</span></span>
+<span class="brand"><span class="bname">İstanbul Çiğ Köfte</span></span>
+<span class="brand"><span class="bname">TV8</span></span>
+<span class="brand"><span class="bname">Pelaçık</span></span>
+</div>
+</div>
+</div>
     <p class="clients-note">Türkiye'nin ve dünyanın önde gelen markaları için reklam, marka filmi,
     kampanya ve belgesel işlerinde görüntü yönetmenliği. Birlikte çalışılan
     <b>yönetmenlerin adları</b> her işin künyesine eklenecek.</p>
