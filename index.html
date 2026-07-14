@@ -121,6 +121,7 @@
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+html, body { overflow-x: hidden; }
 body {
   margin: 0; background: var(--ink); color: var(--bone);
   font-family: var(--body); font-size: 16px; line-height: 1.6;
@@ -170,8 +171,8 @@ header.bar {
 .hero h1 .thin { color: transparent; -webkit-text-stroke: 1.5px var(--bone); }
 .hero h1 .dodo {
   font-family: var(--mono); font-weight: 400; text-transform: lowercase;
-  font-size: clamp(13px, 1.8vw, 22px); letter-spacing: .18em; color: var(--tungsten);
-  -webkit-text-stroke: 0; vertical-align: clamp(28px, 6vw, 92px); margin-left: 8px; white-space: nowrap;
+  font-size: clamp(15px, 2.1vw, 26px); letter-spacing: .18em; color: var(--tungsten);
+  -webkit-text-stroke: 0; vertical-align: 0; margin-left: 8px; white-space: nowrap;
 }
 .hero .sub {
   display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 18px; color: var(--dim);
@@ -228,9 +229,10 @@ section { padding: clamp(56px, 9vh, 104px) clamp(20px, 4vw, 48px); }
 /* ── Müşteri şeridi: yavaş kayan logolu marka bandı ── */
 .clients-wrap { max-width: 1280px; margin: 0 auto; }
 .marquee {
+  width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;
   overflow: hidden; padding: clamp(16px, 3vh, 32px) 0;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
 }
 .marquee-track { display: flex; width: max-content; animation: marq 90s linear infinite; }
 .marquee:hover .marquee-track { animation-play-state: paused; }
@@ -263,6 +265,56 @@ footer h2 {
 footer h2 a { transition: color .25s; }
 footer h2 a:hover { color: var(--tungsten); }
 .foot-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 32px; color: var(--dim); }
+.foot-row a { transition: color .2s; }
+.foot-row a:hover { color: var(--tungsten); }
+.foot-socials { display: inline-flex; align-items: center; gap: 10px; }
+.foot-socials .tick { color: var(--hair); }
+
+/* ── Video lightbox ── */
+.lightbox {
+  position: fixed; inset: 0; z-index: 100; display: none;
+  align-items: center; justify-content: center;
+  background: rgba(6,7,9,.92); padding: clamp(16px, 4vw, 48px);
+}
+.lightbox.open { display: flex; }
+.lightbox-inner { position: relative; width: min(1100px, 100%); }
+.lightbox-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+.lightbox-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.lightbox-close {
+  position: absolute; top: -44px; right: 0; background: none; border: 0; cursor: pointer;
+  color: var(--bone); font-family: var(--mono); font-size: 13px; letter-spacing: .14em;
+  text-transform: uppercase; padding: 8px; transition: color .2s;
+}
+.lightbox-close:hover { color: var(--tungsten); }
+@media (max-width: 600px) {
+  .lightbox { padding: 0; }
+  .lightbox-inner { width: 100%; }
+  .lightbox-close { top: 12px; right: 12px; background: rgba(11,13,17,.6); border-radius: 6px; }
+}
+
+/* ── Mobil optimizasyon ── */
+@media (max-width: 600px) {
+  header.bar { padding: 12px 16px; gap: 8px 10px; flex-wrap: wrap; }
+  .bar .brand { font-size: 10px; letter-spacing: .1em; }
+  .bar nav { gap: 10px; }
+  .bar nav a { font-size: 9.5px; letter-spacing: .08em; }
+
+  .hero .hero-media { height: min(72vh, 560px); }
+  .hero h1 .dodo { display: block; margin-left: 0; margin-top: 6px; }
+
+  section { padding: 40px 18px; }
+  .section-head { flex-wrap: wrap; }
+
+  .still { aspect-ratio: 16 / 10; }
+  .works { gap: 28px; }
+
+  .brand .chip { width: 36px; height: 36px; }
+  .brand .chip img { width: 26px; height: 26px; }
+  .brand .bname { font-size: 20px; }
+
+  footer h2 { font-size: clamp(38px, 13vw, 64px); }
+  .foot-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
@@ -307,375 +359,7 @@ footer h2 a:hover { color: var(--tungsten); }
     </div>
     <div class="works">
 
-      <a class="work featured" href="https://vimeo.com/1188038441" target="_blank" rel="noopener">
-        <div class="still"><img src="img/1188038441.jpg" alt="The Seas of Türkiye — Şahika Ercümen — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Turkish Airlines</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">The Seas of Türkiye — Şahika Ercümen</h3>
-          <div class="meta">
-            <span>Marka Filmi</span><span class="tick">·</span>
-            <span>2026</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/1203809331" target="_blank" rel="noopener">
-        <div class="still"><img src="img/1203809331.jpg" alt="Digiturk İnternet — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Digiturk</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Digiturk İnternet</h3>
-          <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2026</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/1188068578" target="_blank" rel="noopener">
-        <div class="still"><img src="img/1188068578.jpg" alt="Masal — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Mercedes-Benz</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Masal</h3>
-          <div class="meta">
-            <span>Reklam Filmi</span><span class="tick">·</span>
-            <span>2026</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/1188061395" target="_blank" rel="noopener">
-        <div class="still"><img src="img/1188061395.jpg" alt="Nasıl Olsa Koruyucusuz Sana — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Sana</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Nasıl Olsa Koruyucusuz Sana</h3>
-          <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2026</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/1188044069" target="_blank" rel="noopener">
-        <div class="still"><img src="img/1188044069.jpg" alt="Effaclar — Enis Arıkan — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">La Roche-Posay</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Effaclar — Enis Arıkan</h3>
-          <div class="meta">
-            <span>Dijital Film</span><span class="tick">·</span>
-            <span>2026</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/1159627470" target="_blank" rel="noopener">
-        <div class="still"><img src="img/1159627470.jpg" alt="Kek Hazırlama — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Acar Home</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Kek Hazırlama</h3>
-          <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2026</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/1159622407" target="_blank" rel="noopener">
-        <div class="still"><img src="img/1159622407.jpg" alt="Akşam Sofrası — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Acar Home</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Akşam Sofrası</h3>
-          <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2026</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/1157202235" target="_blank" rel="noopener">
-        <div class="still"><img src="img/1157202235.jpg" alt="İstanbul Çiğ Köfte — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">İstanbul Çiğ Köfte</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">İstanbul Çiğ Köfte</h3>
-          <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2026</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/1143048896" target="_blank" rel="noopener">
-        <div class="still"><img src="img/1143048896.jpg" alt="9'u 6 Geçe — 10 Kasım — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Akkök Holding</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">9'u 6 Geçe — 10 Kasım</h3>
-          <div class="meta">
-            <span>Anma Filmi</span><span class="tick">·</span>
-            <span>2025</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work featured" href="https://vimeo.com/1076161360" target="_blank" rel="noopener">
-        <div class="still"><img src="img/1076161360.jpg" alt="Travego — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Mercedes-Benz</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Travego</h3>
-          <div class="meta">
-            <span>Reklam Filmi</span><span class="tick">·</span>
-            <span>2025</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/1075846154" target="_blank" rel="noopener">
-        <div class="still"><img src="img/1075846154.jpg" alt="Radar — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Spotify</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Radar</h3>
-          <div class="meta">
-            <span>Kampanya Filmi</span><span class="tick">·</span>
-            <span>2025</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/1026926983" target="_blank" rel="noopener">
-        <div class="still"><img src="img/1026926983.jpg" alt="Gold — Kahvaltı — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Renax</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Gold — Kahvaltı</h3>
-          <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2024</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/988344939" target="_blank" rel="noopener">
-        <div class="still"><img src="img/988344939.jpg" alt="19 Mayıs — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Türknet</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">19 Mayıs</h3>
-          <div class="meta">
-            <span>Kampanya Filmi</span><span class="tick">·</span>
-            <span>2024</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/987970109" target="_blank" rel="noopener">
-        <div class="still"><img src="img/987970109.jpg" alt="Tutku — Fotoğraf — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Eti</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Tutku — Fotoğraf</h3>
-          <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2024</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/987967888" target="_blank" rel="noopener">
-        <div class="still"><img src="img/987967888.jpg" alt="Tutku — Kavuşma — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Eti</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Tutku — Kavuşma</h3>
-          <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2024</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work featured" href="https://vimeo.com/941991091" target="_blank" rel="noopener">
-        <div class="still"><img src="img/941991091.jpg" alt="Earth Day — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">National Geographic</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Earth Day</h3>
-          <div class="meta">
-            <span>Tanıtım Filmi</span><span class="tick">·</span>
-            <span>2024</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/941988813" target="_blank" rel="noopener">
-        <div class="still"><img src="img/941988813.jpg" alt="BLOK3 — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Spotify</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">BLOK3</h3>
-          <div class="meta">
-            <span>Kampanya Filmi</span><span class="tick">·</span>
-            <span>2024</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/937740899" target="_blank" rel="noopener">
-        <div class="still"><img src="img/937740899.jpg" alt="M Lisa — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Spotify</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">M Lisa</h3>
-          <div class="meta">
-            <span>Kampanya Filmi</span><span class="tick">·</span>
-            <span>2024</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/937739804" target="_blank" rel="noopener">
-        <div class="still"><img src="img/937739804.jpg" alt="Mert Demir — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Spotify</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Mert Demir</h3>
-          <div class="meta">
-            <span>Kampanya Filmi</span><span class="tick">·</span>
-            <span>2024</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/937739441" target="_blank" rel="noopener">
-        <div class="still"><img src="img/937739441.jpg" alt="Burcu Esmersoy — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Servis Plan</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Burcu Esmersoy</h3>
-          <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2024</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/879357916" target="_blank" rel="noopener">
-        <div class="still"><img src="img/879357916.jpg" alt="Objektifin Ardı: Atatürk — Teaser — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Belgesel</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Objektifin Ardı: Atatürk — Teaser</h3>
-          <div class="meta">
-            <span>Belgesel</span><span class="tick">·</span>
-            <span>2023</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/874609785" target="_blank" rel="noopener">
-        <div class="still"><img src="img/874609785.jpg" alt="Spotify — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Spotify</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Spotify</h3>
-          <div class="meta">
-            <span>Kampanya Filmi</span><span class="tick">·</span>
-            <span>2023</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/874596204" target="_blank" rel="noopener">
-        <div class="still"><img src="img/874596204.jpg" alt="DS Automobiles × National Geographic — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">DS Automobiles</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">DS Automobiles × National Geographic</h3>
-          <div class="meta">
-            <span>İş Birliği Filmi</span><span class="tick">·</span>
-            <span>2023</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/874592032" target="_blank" rel="noopener">
+      <a class="work featured" href="https://vimeo.com/874592032" target="_blank" rel="noopener" data-vimeo="874592032">
         <div class="still"><img src="img/874592032.jpg" alt="DS 7 — film karesi" loading="lazy"></div>
         <div class="slate">
           <div class="slate-top">
@@ -685,29 +369,102 @@ footer h2 a:hover { color: var(--tungsten); }
           <h3 class="title">DS 7</h3>
           <div class="meta">
             <span>TVC</span><span class="tick">·</span>
-            <span>2023</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
+            <span>2023</span>
           </div>
         </div>
       </a>
 
-      <a class="work" href="https://vimeo.com/870999251" target="_blank" rel="noopener">
-        <div class="still"><img src="img/870999251.jpg" alt="Ziraat Bankası — film karesi" loading="lazy"></div>
+      <a class="work featured" href="https://vimeo.com/1188038441" target="_blank" rel="noopener" data-vimeo="1188038441">
+        <div class="still"><img src="img/1188038441.jpg" alt="The Seas of Türkiye — Şahika Ercümen — film karesi" loading="lazy"></div>
         <div class="slate">
           <div class="slate-top">
-            <span class="client">Ziraat Bankası</span>
+            <span class="client">Turkish Airlines</span>
             <span class="watch">İzle&nbsp;↗</span>
           </div>
-          <h3 class="title">Ziraat Bankası</h3>
+          <h3 class="title">The Seas of Türkiye — Şahika Ercümen</h3>
           <div class="meta">
-            <span>Reklam Filmi</span><span class="tick">·</span>
-            <span>2023</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
+            <span>Marka Filmi</span><span class="tick">·</span>
+            <span>2026</span>
           </div>
         </div>
       </a>
 
-      <a class="work" href="https://vimeo.com/870010279" target="_blank" rel="noopener">
+      <a class="work featured" href="https://vimeo.com/1076161360" target="_blank" rel="noopener" data-vimeo="1076161360">
+        <div class="still"><img src="img/1076161360.jpg" alt="Travego — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Mercedes-Benz</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Travego</h3>
+          <div class="meta">
+            <span>Reklam Filmi</span><span class="tick">·</span>
+            <span>2025</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/1203809331" target="_blank" rel="noopener" data-vimeo="1203809331">
+        <div class="still"><img src="img/1203809331.jpg" alt="Digiturk İnternet — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Digiturk</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Digiturk İnternet</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2026</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/1188044069" target="_blank" rel="noopener" data-vimeo="1188044069">
+        <div class="still"><img src="img/1188044069.jpg" alt="Effaclar — Enis Arıkan — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">La Roche-Posay</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Effaclar — Enis Arıkan</h3>
+          <div class="meta">
+            <span>Dijital Film</span><span class="tick">·</span>
+            <span>2026</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/1188061395" target="_blank" rel="noopener" data-vimeo="1188061395">
+        <div class="still"><img src="img/1188061395.jpg" alt="Nasıl Olsa Koruyucusuz Sana — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Sana</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Nasıl Olsa Koruyucusuz Sana</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2026</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/941988813" target="_blank" rel="noopener" data-vimeo="941988813">
+        <div class="still"><img src="img/941988813.jpg" alt="BLOK3 — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Spotify</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">BLOK3</h3>
+          <div class="meta">
+            <span>Kampanya Filmi</span><span class="tick">·</span>
+            <span>2024</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/870010279" target="_blank" rel="noopener" data-vimeo="870010279">
         <div class="still"><img src="img/870010279.jpg" alt="Kızılay Maden Suyu — film karesi" loading="lazy"></div>
         <div class="slate">
           <div class="slate-top">
@@ -717,141 +474,222 @@ footer h2 a:hover { color: var(--tungsten); }
           <h3 class="title">Kızılay Maden Suyu</h3>
           <div class="meta">
             <span>TVC</span><span class="tick">·</span>
-            <span>2023</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
+            <span>2023</span>
           </div>
         </div>
       </a>
 
-      <a class="work" href="https://vimeo.com/821675102" target="_blank" rel="noopener">
-        <div class="still"><img src="img/821675102.jpg" alt="Şahin Güvencesi — film karesi" loading="lazy"></div>
+      <a class="work" href="https://vimeo.com/1075846154" target="_blank" rel="noopener" data-vimeo="1075846154">
+        <div class="still"><img src="img/1075846154.jpg" alt="Radar — film karesi" loading="lazy"></div>
         <div class="slate">
           <div class="slate-top">
-            <span class="client">Şahin Sucukları</span>
+            <span class="client">Spotify</span>
             <span class="watch">İzle&nbsp;↗</span>
           </div>
-          <h3 class="title">Şahin Güvencesi</h3>
+          <h3 class="title">Radar</h3>
           <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2023</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
+            <span>Kampanya Filmi</span><span class="tick">·</span>
+            <span>2025</span>
           </div>
         </div>
       </a>
 
-      <a class="work" href="https://vimeo.com/821663421" target="_blank" rel="noopener">
-        <div class="still"><img src="img/821663421.jpg" alt="Şahin Güvencesiyle Pastırma — film karesi" loading="lazy"></div>
+      <a class="work" href="https://vimeo.com/879357916" target="_blank" rel="noopener" data-vimeo="879357916">
+        <div class="still"><img src="img/879357916.jpg" alt="Objektifin Ardı: Atatürk — Teaser — film karesi" loading="lazy"></div>
         <div class="slate">
           <div class="slate-top">
-            <span class="client">Şahin Sucukları</span>
+            <span class="client">Belgesel</span>
             <span class="watch">İzle&nbsp;↗</span>
           </div>
-          <h3 class="title">Şahin Güvencesiyle Pastırma</h3>
-          <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2023</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/791980415" target="_blank" rel="noopener">
-        <div class="still"><img src="img/791980415.jpg" alt="Gökcan Sanlıman — Sihirli Ojeler — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">Müzik Videosu</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Gökcan Sanlıman — Sihirli Ojeler</h3>
-          <div class="meta">
-            <span>Müzik Videosu</span><span class="tick">·</span>
-            <span>2023</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/786236710" target="_blank" rel="noopener">
-        <div class="still"><img src="img/786236710.jpg" alt="Survivor 2023 — Teaser — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">TV8</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Survivor 2023 — Teaser</h3>
-          <div class="meta">
-            <span>Tanıtım Filmi</span><span class="tick">·</span>
-            <span>2023</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/777454713" target="_blank" rel="noopener">
-        <div class="still"><img src="img/777454713.jpg" alt="beIN Sports — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">beIN Sports</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">beIN Sports</h3>
-          <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2022</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/777450770" target="_blank" rel="noopener">
-        <div class="still"><img src="img/777450770.jpg" alt="beIN Sports II — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">beIN Sports</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">beIN Sports II</h3>
-          <div class="meta">
-            <span>TVC</span><span class="tick">·</span>
-            <span>2022</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/760595246" target="_blank" rel="noopener">
-        <div class="still"><img src="img/760595246.jpg" alt="Bugün Var, Yarın Yok Olmasın! — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">National Geographic</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Bugün Var, Yarın Yok Olmasın!</h3>
-          <div class="meta">
-            <span>Farkındalık Filmi</span><span class="tick">·</span>
-            <span>2022</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="work" href="https://vimeo.com/722619919" target="_blank" rel="noopener">
-        <div class="still"><img src="img/722619919.jpg" alt="Zirvedeki Türküler — film karesi" loading="lazy"></div>
-        <div class="slate">
-          <div class="slate-top">
-            <span class="client">TRT</span>
-            <span class="watch">İzle&nbsp;↗</span>
-          </div>
-          <h3 class="title">Zirvedeki Türküler</h3>
+          <h3 class="title">Objektifin Ardı: Atatürk — Teaser</h3>
           <div class="meta">
             <span>Belgesel</span><span class="tick">·</span>
-            <span>2022</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
+            <span>2023</span>
           </div>
         </div>
       </a>
 
-      <a class="work" href="https://vimeo.com/685525817" target="_blank" rel="noopener">
+      <a class="work" href="https://vimeo.com/1026926983" target="_blank" rel="noopener" data-vimeo="1026926983">
+        <div class="still"><img src="img/1026926983.jpg" alt="Gold — Kahvaltı — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Renax</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Gold — Kahvaltı</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2024</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/1143048896" target="_blank" rel="noopener" data-vimeo="1143048896">
+        <div class="still"><img src="img/1143048896.jpg" alt="9'u 6 Geçe — 10 Kasım — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Akkök Holding</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">9'u 6 Geçe — 10 Kasım</h3>
+          <div class="meta">
+            <span>Anma Filmi</span><span class="tick">·</span>
+            <span>2025</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/937739441" target="_blank" rel="noopener" data-vimeo="937739441">
+        <div class="still"><img src="img/937739441.jpg" alt="Burcu Esmersoy — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Servis Plan</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Burcu Esmersoy</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2024</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/988344939" target="_blank" rel="noopener" data-vimeo="988344939">
+        <div class="still"><img src="img/988344939.jpg" alt="19 Mayıs — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Türknet</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">19 Mayıs</h3>
+          <div class="meta">
+            <span>Kampanya Filmi</span><span class="tick">·</span>
+            <span>2024</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/987967888" target="_blank" rel="noopener" data-vimeo="987967888">
+        <div class="still"><img src="img/987967888.jpg" alt="Tutku — Kavuşma — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Eti</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Tutku — Kavuşma</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2024</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/937739804" target="_blank" rel="noopener" data-vimeo="937739804">
+        <div class="still"><img src="img/937739804.jpg" alt="Mert Demir — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Spotify</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Mert Demir</h3>
+          <div class="meta">
+            <span>Kampanya Filmi</span><span class="tick">·</span>
+            <span>2024</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/937740899" target="_blank" rel="noopener" data-vimeo="937740899">
+        <div class="still"><img src="img/937740899.jpg" alt="M Lisa — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Spotify</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">M Lisa</h3>
+          <div class="meta">
+            <span>Kampanya Filmi</span><span class="tick">·</span>
+            <span>2024</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/874596204" target="_blank" rel="noopener" data-vimeo="874596204">
+        <div class="still"><img src="img/874596204.jpg" alt="DS Automobiles × National Geographic — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">DS Automobiles</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">DS Automobiles × National Geographic</h3>
+          <div class="meta">
+            <span>İş Birliği Filmi</span><span class="tick">·</span>
+            <span>2023</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/987970109" target="_blank" rel="noopener" data-vimeo="987970109">
+        <div class="still"><img src="img/987970109.jpg" alt="Tutku — Fotoğraf — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Eti</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Tutku — Fotoğraf</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2024</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/1188068578" target="_blank" rel="noopener" data-vimeo="1188068578">
+        <div class="still"><img src="img/1188068578.jpg" alt="Masal — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Mercedes-Benz</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Masal</h3>
+          <div class="meta">
+            <span>Reklam Filmi</span><span class="tick">·</span>
+            <span>2026</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/1157202235" target="_blank" rel="noopener" data-vimeo="1157202235">
+        <div class="still"><img src="img/1157202235.jpg" alt="İstanbul Çiğ Köfte — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">İstanbul Çiğ Köfte</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">İstanbul Çiğ Köfte</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2026</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/874609785" target="_blank" rel="noopener" data-vimeo="874609785">
+        <div class="still"><img src="img/874609785.jpg" alt="Spotify — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Spotify</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Spotify</h3>
+          <div class="meta">
+            <span>Kampanya Filmi</span><span class="tick">·</span>
+            <span>2023</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/685525817" target="_blank" rel="noopener" data-vimeo="685525817">
         <div class="still"><img src="img/685525817.jpg" alt="Pelaçık — film karesi" loading="lazy"></div>
         <div class="slate">
           <div class="slate-top">
@@ -861,13 +699,192 @@ footer h2 a:hover { color: var(--tungsten); }
           <h3 class="title">Pelaçık</h3>
           <div class="meta">
             <span>Moda Filmi</span><span class="tick">·</span>
-            <span>2022</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
+            <span>2022</span>
           </div>
         </div>
       </a>
 
-      <a class="work" href="https://vimeo.com/685406160" target="_blank" rel="noopener">
+      <a class="work" href="https://vimeo.com/777454713" target="_blank" rel="noopener" data-vimeo="777454713">
+        <div class="still"><img src="img/777454713.jpg" alt="beIN Sports — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">beIN Sports</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">beIN Sports</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2022</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/1159627470" target="_blank" rel="noopener" data-vimeo="1159627470">
+        <div class="still"><img src="img/1159627470.jpg" alt="Kek Hazırlama — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Acar Home</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Kek Hazırlama</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2026</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/870999251" target="_blank" rel="noopener" data-vimeo="870999251">
+        <div class="still"><img src="img/870999251.jpg" alt="Ziraat Bankası — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Ziraat Bankası</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Ziraat Bankası</h3>
+          <div class="meta">
+            <span>Reklam Filmi</span><span class="tick">·</span>
+            <span>2023</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/760595246" target="_blank" rel="noopener" data-vimeo="760595246">
+        <div class="still"><img src="img/760595246.jpg" alt="Bugün Var, Yarın Yok Olmasın! — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">National Geographic</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Bugün Var, Yarın Yok Olmasın!</h3>
+          <div class="meta">
+            <span>Farkındalık Filmi</span><span class="tick">·</span>
+            <span>2022</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/1159622407" target="_blank" rel="noopener" data-vimeo="1159622407">
+        <div class="still"><img src="img/1159622407.jpg" alt="Akşam Sofrası — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Acar Home</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Akşam Sofrası</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2026</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/722619919" target="_blank" rel="noopener" data-vimeo="722619919">
+        <div class="still"><img src="img/722619919.jpg" alt="Zirvedeki Türküler — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">TRT</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Zirvedeki Türküler</h3>
+          <div class="meta">
+            <span>Belgesel</span><span class="tick">·</span>
+            <span>2022</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/786236710" target="_blank" rel="noopener" data-vimeo="786236710">
+        <div class="still"><img src="img/786236710.jpg" alt="Survivor 2023 — Teaser — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">TV8</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Survivor 2023 — Teaser</h3>
+          <div class="meta">
+            <span>Tanıtım Filmi</span><span class="tick">·</span>
+            <span>2023</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/821663421" target="_blank" rel="noopener" data-vimeo="821663421">
+        <div class="still"><img src="img/821663421.jpg" alt="Şahin Güvencesiyle Pastırma — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Şahin Sucukları</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Şahin Güvencesiyle Pastırma</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2023</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work featured" href="https://vimeo.com/821675102" target="_blank" rel="noopener" data-vimeo="821675102">
+        <div class="still"><img src="img/821675102.jpg" alt="Şahin Güvencesi — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Şahin Sucukları</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Şahin Güvencesi</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2023</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work featured" href="https://vimeo.com/941991091" target="_blank" rel="noopener" data-vimeo="941991091">
+        <div class="still"><img src="img/941991091.jpg" alt="Earth Day — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">National Geographic</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Earth Day</h3>
+          <div class="meta">
+            <span>Tanıtım Filmi</span><span class="tick">·</span>
+            <span>2024</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/791980415" target="_blank" rel="noopener" data-vimeo="791980415">
+        <div class="still"><img src="img/791980415.jpg" alt="Gökcan Sanlıman — Sihirli Ojeler — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">Müzik Videosu</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">Gökcan Sanlıman — Sihirli Ojeler</h3>
+          <div class="meta">
+            <span>Müzik Videosu</span><span class="tick">·</span>
+            <span>2023</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/777450770" target="_blank" rel="noopener" data-vimeo="777450770">
+        <div class="still"><img src="img/777450770.jpg" alt="beIN Sports II — film karesi" loading="lazy"></div>
+        <div class="slate">
+          <div class="slate-top">
+            <span class="client">beIN Sports</span>
+            <span class="watch">İzle&nbsp;↗</span>
+          </div>
+          <h3 class="title">beIN Sports II</h3>
+          <div class="meta">
+            <span>TVC</span><span class="tick">·</span>
+            <span>2022</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="https://vimeo.com/685406160" target="_blank" rel="noopener" data-vimeo="685406160">
         <div class="still"><img src="img/685406160.jpg" alt="8 Mart Dünya Kadınlar Günü — film karesi" loading="lazy"></div>
         <div class="slate">
           <div class="slate-top">
@@ -877,13 +894,12 @@ footer h2 a:hover { color: var(--tungsten); }
           <h3 class="title">8 Mart Dünya Kadınlar Günü</h3>
           <div class="meta">
             <span>Kampanya Filmi</span><span class="tick">·</span>
-            <span>2022</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
+            <span>2022</span>
           </div>
         </div>
       </a>
 
-      <a class="work" href="https://vimeo.com/562852925" target="_blank" rel="noopener">
+      <a class="work" href="https://vimeo.com/562852925" target="_blank" rel="noopener" data-vimeo="562852925">
         <div class="still"><img src="img/562852925.jpg" alt="19 Mayıs — Tanısan Severdin — film karesi" loading="lazy"></div>
         <div class="slate">
           <div class="slate-top">
@@ -893,8 +909,7 @@ footer h2 a:hover { color: var(--tungsten); }
           <h3 class="title">19 Mayıs — Tanısan Severdin</h3>
           <div class="meta">
             <span>Kampanya Filmi</span><span class="tick">·</span>
-            <span>2021</span><span class="tick">·</span>
-            <span>Yön.&thinsp;—</span>
+            <span>2021</span>
           </div>
         </div>
       </a>
@@ -916,13 +931,13 @@ footer h2 a:hover { color: var(--tungsten); }
 <span class="brand"><span class="chip"><img src="img/logos/spotify.png" alt="Spotify logosu"></span><span class="bname">Spotify</span></span>
 <span class="brand"><span class="chip"><img src="img/logos/natgeo.png" alt="National Geographic logosu"></span><span class="bname">National Geographic</span></span>
 <span class="brand"><span class="chip"><img src="img/logos/samsung.png" alt="Samsung logosu"></span><span class="bname">Samsung</span></span>
-<span class="brand"><span class="bname">Eti</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/eti.png" alt="Eti logosu"></span><span class="bname">Eti</span></span>
 <span class="brand"><span class="chip"><img src="img/logos/ziraat.png" alt="Ziraat Bankası logosu"></span><span class="bname">Ziraat Bankası</span></span>
-<span class="brand"><span class="bname">Digiturk</span></span>
-<span class="brand"><span class="bname">La Roche-Posay</span></span>
-<span class="brand"><span class="bname">beIN Sports</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/digiturk.svg" alt="Digiturk logosu"></span><span class="bname">Digiturk</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/larocheposay.svg" alt="La Roche-Posay logosu"></span><span class="bname">La Roche-Posay</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/bein.svg" alt="beIN Sports logosu"></span><span class="bname">beIN Sports</span></span>
 <span class="brand"><span class="chip"><img src="img/logos/ds.png" alt="DS Automobiles logosu"></span><span class="bname">DS Automobiles</span></span>
-<span class="brand"><span class="bname">Castrol</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/castrol.svg" alt="Castrol logosu"></span><span class="bname">Castrol</span></span>
 <span class="brand"><span class="chip"><img src="img/logos/d_trt.png" alt="TRT logosu"></span><span class="bname">TRT</span></span>
 <span class="brand"><span class="bname">Sana</span></span>
 <span class="brand"><span class="bname">Türknet</span></span>
@@ -933,7 +948,7 @@ footer h2 a:hover { color: var(--tungsten); }
 <span class="brand"><span class="bname">Şahin Sucukları</span></span>
 <span class="brand"><span class="chip"><img src="img/logos/servisplan.png" alt="Servis Plan logosu"></span><span class="bname">Servis Plan</span></span>
 <span class="brand"><span class="bname">İstanbul Çiğ Köfte</span></span>
-<span class="brand"><span class="bname">TV8</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/tv8.png" alt="TV8 logosu"></span><span class="bname">TV8</span></span>
 <span class="brand"><span class="bname">Pelaçık</span></span>
 </div>
 <div class="marquee-half" aria-hidden="true">
@@ -942,13 +957,13 @@ footer h2 a:hover { color: var(--tungsten); }
 <span class="brand"><span class="chip"><img src="img/logos/spotify.png" alt="Spotify logosu"></span><span class="bname">Spotify</span></span>
 <span class="brand"><span class="chip"><img src="img/logos/natgeo.png" alt="National Geographic logosu"></span><span class="bname">National Geographic</span></span>
 <span class="brand"><span class="chip"><img src="img/logos/samsung.png" alt="Samsung logosu"></span><span class="bname">Samsung</span></span>
-<span class="brand"><span class="bname">Eti</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/eti.png" alt="Eti logosu"></span><span class="bname">Eti</span></span>
 <span class="brand"><span class="chip"><img src="img/logos/ziraat.png" alt="Ziraat Bankası logosu"></span><span class="bname">Ziraat Bankası</span></span>
-<span class="brand"><span class="bname">Digiturk</span></span>
-<span class="brand"><span class="bname">La Roche-Posay</span></span>
-<span class="brand"><span class="bname">beIN Sports</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/digiturk.svg" alt="Digiturk logosu"></span><span class="bname">Digiturk</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/larocheposay.svg" alt="La Roche-Posay logosu"></span><span class="bname">La Roche-Posay</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/bein.svg" alt="beIN Sports logosu"></span><span class="bname">beIN Sports</span></span>
 <span class="brand"><span class="chip"><img src="img/logos/ds.png" alt="DS Automobiles logosu"></span><span class="bname">DS Automobiles</span></span>
-<span class="brand"><span class="bname">Castrol</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/castrol.svg" alt="Castrol logosu"></span><span class="bname">Castrol</span></span>
 <span class="brand"><span class="chip"><img src="img/logos/d_trt.png" alt="TRT logosu"></span><span class="bname">TRT</span></span>
 <span class="brand"><span class="bname">Sana</span></span>
 <span class="brand"><span class="bname">Türknet</span></span>
@@ -959,26 +974,75 @@ footer h2 a:hover { color: var(--tungsten); }
 <span class="brand"><span class="bname">Şahin Sucukları</span></span>
 <span class="brand"><span class="chip"><img src="img/logos/servisplan.png" alt="Servis Plan logosu"></span><span class="bname">Servis Plan</span></span>
 <span class="brand"><span class="bname">İstanbul Çiğ Köfte</span></span>
-<span class="brand"><span class="bname">TV8</span></span>
+<span class="brand"><span class="chip"><img src="img/logos/tv8.png" alt="TV8 logosu"></span><span class="bname">TV8</span></span>
 <span class="brand"><span class="bname">Pelaçık</span></span>
 </div>
 </div>
 </div>
     <p class="clients-note">Türkiye'nin ve dünyanın önde gelen markaları için reklam, marka filmi,
-    kampanya ve belgesel işlerinde görüntü yönetmenliği. Birlikte çalışılan
-    <b>yönetmenlerin adları</b> her işin künyesine eklenecek.</p>
+    kampanya ve belgesel işlerinde <b>görüntü yönetmenliği</b>.</p>
   </div>
 </section>
 
 <footer id="iletisim">
   <div class="foot-inner">
-    <h2><a href="https://vimeo.com/dodogukan" target="_blank" rel="noopener">Birlikte<br>Çalışalım&nbsp;↗</a></h2>
+    <h2><a href="https://wa.me/905448635959?text=Merhaba%20Do%C4%9Fukan%2C%20bir%20proje%20i%C3%A7in%20g%C3%B6r%C3%BC%C5%9Fmek%20istiyorum." target="_blank" rel="noopener">Birlikte<br>Çalışalım&nbsp;↗</a></h2>
     <div class="foot-row">
       <span class="mono">Doğukan İnce (Dodo) — Görüntü Yönetmeni</span>
-      <span class="mono"><a href="https://vimeo.com/dodogukan" target="_blank" rel="noopener">vimeo.com/dodogukan</a></span>
+      <span class="mono"><a href="mailto:ince@newdayfilmworks.com">ince@newdayfilmworks.com</a></span>
+      <span class="mono foot-socials">
+        <a href="https://vimeo.com/dodogukan" target="_blank" rel="noopener">Vimeo</a>
+        <span class="tick">·</span>
+        <a href="https://www.instagram.com/dodogukannn/" target="_blank" rel="noopener">Instagram</a>
+      </span>
     </div>
   </div>
 </footer>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Kapat">Kapat ✕</button>
+    <div class="lightbox-frame" id="lightboxFrame"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var lightbox = document.getElementById('lightbox');
+  var frame = document.getElementById('lightboxFrame');
+  var closeBtn = document.getElementById('lightboxClose');
+
+  function openLightbox(vimeoId) {
+    frame.innerHTML = '<iframe src="https://player.vimeo.com/video/' + vimeoId +
+      '?autoplay=1&title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    frame.innerHTML = '';
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.work[data-vimeo]').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      openLightbox(link.getAttribute('data-vimeo'));
+    });
+  });
+
+  closeBtn.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', function (e) {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+  });
+})();
+</script>
 
 </body>
 </html>
