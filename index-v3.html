@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doğukan İnce (Dodo) — Görüntü Yönetmeni</title>
+<meta name="description" content="Doğukan İnce (Dodo) — Görüntü Yönetmeni. Reklam, marka filmi, kampanya ve belgesel işleri.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0b;
+  --bg2:#101012;
+  --fg:#edebe6;
+  --muted:#8a877f;
+  --line:rgba(237,235,230,.09);
+  --gold:#c5a572;
+  --gold-soft:rgba(197,165,114,.55);
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'Inter',ui-sans-serif,system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--fg);
+  font-family:var(--sans);font-weight:300;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;background:none;border:none;color:inherit}
+::selection{background:var(--gold);color:#0a0a0b}
+
+.label{
+  font-size:.68rem;font-weight:500;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--muted);
+}
+
+/* ============================================================
+   AÇILIŞ — sinematik letterbox: perde açılır gibi
+   ============================================================ */
+.intro{
+  position:fixed;inset:0;z-index:300;overflow:hidden;pointer-events:none;
+  animation:introGone .01s linear 5.2s forwards;
+}
+.intro .panel{
+  position:absolute;left:0;width:100%;height:50.5%;background:#060607;
+}
+.intro .panel.top{top:0;animation:panelUp 1.3s cubic-bezier(.76,0,.24,1) 3.8s forwards}
+.intro .panel.bottom{bottom:0;animation:panelDown 1.3s cubic-bezier(.76,0,.24,1) 3.8s forwards}
+.intro .center{
+  position:absolute;inset:0;z-index:2;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.3rem;
+  text-align:center;padding:0 1.5rem;
+  animation:centerOut .7s ease 3.25s forwards;
+}
+.intro .eyebrow{
+  font-size:.64rem;font-weight:500;letter-spacing:.5em;text-transform:uppercase;
+  color:var(--muted);padding-left:.5em;
+  opacity:0;animation:softIn 1.2s ease 1.5s forwards;
+}
+.intro .name{
+  font-family:var(--serif);font-weight:400;line-height:1.05;
+  font-size:clamp(2.4rem,7vw,5.2rem);
+  opacity:0;letter-spacing:.4em;filter:blur(12px);padding-left:.4em;
+  animation:trackIn 2s cubic-bezier(.2,.8,.2,1) .5s forwards;
+}
+.intro .name em{
+  font-style:italic;color:var(--gold);
+  font-size:clamp(1rem,2.2vw,1.6rem);letter-spacing:.06em;margin-left:.35em;
+}
+.intro .rule{
+  width:0;height:1px;background:var(--gold-soft);
+  animation:ruleGrow 1.2s cubic-bezier(.6,0,.2,1) 1.9s forwards;
+}
+@keyframes trackIn{to{opacity:1;letter-spacing:.02em;filter:blur(0);padding-left:0}}
+@keyframes softIn{to{opacity:1}}
+@keyframes centerOut{to{opacity:0;visibility:hidden}}
+@keyframes panelUp{to{transform:translateY(-102%)}}
+@keyframes panelDown{to{transform:translateY(102%)}}
+@keyframes introGone{to{visibility:hidden;pointer-events:none}}
+@keyframes riseIn{to{opacity:1;transform:none}}
+@keyframes ruleGrow{to{width:min(280px,50vw)}}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.35rem clamp(1.5rem,5vw,4rem);
+  background:linear-gradient(180deg, rgba(10,10,11,.82), rgba(10,10,11,0));
+  transition:background .4s ease, backdrop-filter .4s ease;
+}
+.nav.solid{
+  background:rgba(10,10,11,.78);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.nav .brand{font-family:var(--serif);font-size:1.15rem;letter-spacing:.02em}
+.nav .brand em{color:var(--gold);font-style:italic}
+.nav ul{display:flex;gap:2.4rem;list-style:none}
+.nav ul a{
+  font-size:.7rem;font-weight:500;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--muted);transition:color .3s;
+}
+.nav ul a:hover{color:var(--fg)}
+@media (max-width:560px){.nav ul{gap:1.3rem}.nav ul a{letter-spacing:.14em}}
+
+/* ============================================================
+   HERO — sessiz, tam ekran video, sadece isim
+   ============================================================ */
+.hero{
+  position:relative;min-height:100svh;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 clamp(1.5rem,5vw,4rem) clamp(2.5rem,6vh,4.5rem);
+  overflow:hidden;
+}
+.hero video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:saturate(.85) contrast(1.02) brightness(.8);
+}
+.hero .shade{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(180deg, rgba(10,10,11,.55) 0%, rgba(10,10,11,.15) 38%, rgba(10,10,11,.35) 68%, rgba(10,10,11,.96) 100%);
+}
+.hero .inner{position:relative;z-index:2}
+.hero .inner > *{
+  opacity:0;transform:translateY(26px);
+  animation:riseIn 1.1s cubic-bezier(.2,.8,.2,1) forwards;
+}
+.hero .eyebrow{animation-delay:4.2s;margin-bottom:1.2rem}
+.hero h1{animation-delay:4.35s;
+  font-family:var(--serif);font-weight:400;line-height:.98;letter-spacing:0;
+  font-size:clamp(3rem,10vw,8.2rem);
+}
+.hero h1 em{
+  font-style:italic;color:var(--gold);
+  font-size:clamp(1.05rem,2.4vw,1.7rem);letter-spacing:.06em;margin-left:.3em;
+}
+.hero .meta-row{
+  animation-delay:4.6s;
+  display:flex;flex-wrap:wrap;align-items:center;gap:1.1rem;
+  margin-top:1.6rem;padding-top:1.4rem;border-top:1px solid var(--line);
+  justify-content:space-between;
+}
+.hero .meta-row .left{display:flex;flex-wrap:wrap;gap:2.5rem}
+.hero .meta-row .item .k{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
+.hero .meta-row .item .v{font-size:.95rem;font-weight:400;color:var(--fg)}
+.hero .cta{
+  display:inline-flex;align-items:center;gap:.7rem;
+  font-size:.7rem;font-weight:500;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--fg);padding:.95rem 1.7rem;border:1px solid rgba(237,235,230,.25);
+  border-radius:999px;transition:border-color .35s, background .35s, color .35s;
+}
+.hero .cta:hover{border-color:var(--gold);background:rgba(197,165,114,.08);color:var(--gold)}
+
+/* ============================================================
+   BÖLÜMLER
+   ============================================================ */
+section{padding:clamp(5rem,10vw,8.5rem) clamp(1.5rem,5vw,4rem)}
+.wrap{max-width:84rem;margin:0 auto}
+.sec-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+  padding-bottom:1.4rem;border-bottom:1px solid var(--line);margin-bottom:2.6rem;
+}
+.sec-head h2{
+  font-family:var(--serif);font-weight:400;letter-spacing:0;
+  font-size:clamp(1.9rem,4vw,3rem);line-height:1;
+}
+.sec-head h2 sup{
+  font-family:var(--sans);font-size:.85rem;font-weight:400;color:var(--gold);
+  margin-left:.5rem;letter-spacing:.05em;
+}
+
+/* Filtreler — sade metin sekmeleri */
+.filters{display:flex;flex-wrap:wrap;gap:1.6rem;margin-bottom:2.4rem}
+.filter-btn{
+  font-size:.7rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--muted);padding:.2rem 0;position:relative;transition:color .3s;
+}
+.filter-btn::after{
+  content:"";position:absolute;left:0;bottom:-4px;height:1px;width:100%;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.filter-btn:hover{color:var(--fg)}
+.filter-btn.active{color:var(--fg)}
+.filter-btn.active::after{transform:scaleX(1)}
+
+/* İş grid'i — statik, editoryal */
+.works{
+  display:grid;gap:2.6rem 1.6rem;
+  grid-template-columns:repeat(3,1fr);
+}
+@media (max-width:980px){.works{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){.works{grid-template-columns:1fr}}
+.work{display:block}
+.work figure{
+  position:relative;overflow:hidden;border-radius:4px;
+  aspect-ratio:16/10;background:var(--bg2);
+}
+.work img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .8s cubic-bezier(.2,.8,.2,1), filter .8s ease;
+  filter:saturate(.82) brightness(.94);
+}
+.work:hover img{transform:scale(1.035);filter:saturate(1) brightness(1)}
+.work figure::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg, transparent 65%, rgba(10,10,11,.35));
+  opacity:.6;transition:opacity .5s;
+}
+.work:hover figure::after{opacity:.2}
+.work .go{
+  position:absolute;top:.9rem;right:.9rem;z-index:2;
+  width:2.2rem;height:2.2rem;border-radius:999px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(10,10,11,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(237,235,230,.16);color:var(--fg);
+  opacity:0;transform:translateY(-4px);
+  transition:opacity .35s, transform .35s;
+}
+.work:hover .go{opacity:1;transform:none}
+.work .cap{
+  display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+  padding-top:.85rem;
+}
+.work .cap h3{
+  font-size:.98rem;font-weight:400;letter-spacing:.01em;color:var(--fg);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  position:relative;
+}
+.work .cap h3::after{
+  content:"";position:absolute;left:0;bottom:-3px;height:1px;width:100%;
+  background:var(--gold-soft);transform:scaleX(0);transform-origin:left;
+  transition:transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.work:hover .cap h3::after{transform:scaleX(1)}
+.work .cap span{
+  font-size:.66rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);white-space:nowrap;
+}
+.work.hide{display:none}
+
+/* ============================================================
+   MÜŞTERİLER
+   ============================================================ */
+.clients-band{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.marquee{
+  overflow:hidden;padding:2.6rem 0;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+}
+.marquee .track{
+  display:flex;width:max-content;
+  animation:marquee 42s linear infinite;
+}
+.marquee:hover .track{animation-play-state:paused}
+.marquee .set{
+  display:flex;align-items:center;
+  gap:clamp(3.2rem,7vw,6.5rem);padding-right:clamp(3.2rem,7vw,6.5rem);
+}
+.marquee img{
+  height:36px;width:auto;object-fit:contain;flex:none;
+  filter:grayscale(1) brightness(1.9);opacity:.42;
+  transition:opacity .4s ease, filter .4s ease;
+}
+.marquee img:hover{opacity:.95;filter:grayscale(0) brightness(1.1)}
+@keyframes marquee{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){
+  .marquee .track{animation:none;flex-wrap:wrap;width:auto}
+  .marquee{mask-image:none;-webkit-mask-image:none}
+}
+.clients-note{
+  color:var(--muted);font-size:.92rem;line-height:1.85;max-width:40rem;
+  margin-top:2.4rem;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{padding:clamp(6rem,13vw,10rem) clamp(1.5rem,5vw,4rem) 2.5rem}
+footer .wrap{display:flex;flex-direction:column;align-items:flex-start}
+footer .label{margin-bottom:1.6rem}
+footer .big{
+  font-family:var(--serif);font-weight:400;line-height:1.02;
+  font-size:clamp(2.6rem,8vw,6.4rem);letter-spacing:0;
+  transition:color .4s ease;
+}
+footer .big em{font-style:italic;color:var(--gold)}
+footer .big:hover{color:var(--gold)}
+footer .contact-row{
+  display:flex;flex-wrap:wrap;gap:2.5rem 4rem;margin-top:3rem;
+}
+footer .contact-row .k{
+  font-size:.62rem;font-weight:500;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:.4rem;
+}
+footer .contact-row .v{
+  font-size:1rem;font-weight:400;color:var(--fg);
+  border-bottom:1px solid transparent;transition:color .3s, border-color .3s;
+}
+footer .contact-row .v:hover{color:var(--gold);border-color:var(--gold-soft)}
+footer .foot-row{
+  width:100%;display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;
+  margin-top:4.5rem;padding-top:1.6rem;border-top:1px solid var(--line);
+  font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+}
+footer .foot-row a{transition:color .3s}
+footer .foot-row a:hover{color:var(--gold)}
+
+/* Kaydırma reveal — yalnızca JS varken devrede */
+.js .fade{opacity:0;transform:translateY(24px);transition:opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1)}
+.js .fade.in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-delay:0s !important;animation-duration:.01ms !important;transition-duration:.01ms !important}
+  .intro{display:none}
+  .hero .inner > *{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- AÇILIŞ: sinematik letterbox -->
+<div class="intro" aria-hidden="true">
+  <div class="panel top"></div>
+  <div class="panel bottom"></div>
+  <div class="center">
+    <p class="eyebrow">Görüntü Yönetmeni</p>
+    <div class="name">Doğukan İnce <em>(dodo)</em></div>
+    <div class="rule"></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <a class="brand" href="#top">Doğukan İnce <em>(dodo)</em></a>
+  <nav aria-label="Ana menü">
+    <ul>
+      <li><a href="#isler">İşler</a></li>
+      <li><a href="#musteriler">Müşteriler</a></li>
+      <li><a href="#iletisim">İletişim</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <video src="thy-banner.mp4" autoplay muted loop playsinline></video>
+  <div class="shade" aria-hidden="true"></div>
+  <div class="inner">
+    <p class="eyebrow label">Görüntü Yönetmeni</p>
+    <h1>Doğukan İnce <em>(dodo)</em></h1>
+    <div class="meta-row">
+      <div class="left">
+        <div class="item"><p class="k">Alan</p><p class="v">Reklam · Marka Filmi · Belgesel</p></div>
+        <div class="item"><p class="k">Merkez</p><p class="v">İstanbul</p></div>
+        <div class="item"><p class="k">Arşiv</p><p class="v">37 Seçilmiş İş · 2021—2026</p></div>
+      </div>
+      <a class="cta" href="#isler">İşleri Gör <span aria-hidden="true">↓</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- İŞLER -->
+<section id="isler">
+  <div class="wrap">
+    <div class="sec-head fade">
+      <h2>Seçilmiş İşler<sup>37</sup></h2>
+      <span class="label">2021 — 2026</span>
+    </div>
+
+    <div class="filters fade" role="group" aria-label="İş kategorileri">
+      <button class="filter-btn active" data-f="all" aria-pressed="true" type="button">Tümü</button>
+      <button class="filter-btn" data-f="tvc" aria-pressed="false" type="button">TVC</button>
+      <button class="filter-btn" data-f="reklam" aria-pressed="false" type="button">Reklam &amp; Marka</button>
+      <button class="filter-btn" data-f="kampanya" aria-pressed="false" type="button">Kampanya</button>
+      <button class="filter-btn" data-f="belgesel" aria-pressed="false" type="button">Belgesel &amp; Tanıtım</button>
+      <button class="filter-btn" data-f="muzik" aria-pressed="false" type="button">Müzik &amp; Moda</button>
+    </div>
+
+    <div class="works" id="works">
+
+      <a class="work fade" href="https://vimeo.com/1188038441" target="_blank" rel="noopener" data-cat="reklam">
+        <figure><img src="img/1188038441.jpg" alt="The Seas of Türkiye — Şahika Ercümen" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>The Seas of Türkiye — Şahika Ercümen</h3><span>Marka Filmi · 2026</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/1203809331" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/1203809331.jpg" alt="Digiturk İnternet" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Digiturk İnternet</h3><span>TVC · 2026</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/1188068578" target="_blank" rel="noopener" data-cat="reklam">
+        <figure><img src="img/1188068578.jpg" alt="Masal" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Masal</h3><span>Reklam Filmi · 2026</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/1188061395" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/1188061395.jpg" alt="Nasıl Olsa Koruyucusuz Sana" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Nasıl Olsa Koruyucusuz Sana</h3><span>TVC · 2026</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/1188044069" target="_blank" rel="noopener" data-cat="reklam">
+        <figure><img src="img/1188044069.jpg" alt="Effaclar — Enis Arıkan" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Effaclar — Enis Arıkan</h3><span>Dijital Film · 2026</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/1159627470" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/1159627470.jpg" alt="Kek Hazırlama" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Kek Hazırlama</h3><span>TVC · 2026</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/1159622407" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/1159622407.jpg" alt="Akşam Sofrası" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Akşam Sofrası</h3><span>TVC · 2026</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/1157202235" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/1157202235.jpg" alt="İstanbul Çiğ Köfte" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>İstanbul Çiğ Köfte</h3><span>TVC · 2026</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/1143048896" target="_blank" rel="noopener" data-cat="belgesel">
+        <figure><img src="img/1143048896.jpg" alt="9'u 6 Geçe — 10 Kasım" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>9'u 6 Geçe — 10 Kasım</h3><span>Anma Filmi · 2025</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/1076161360" target="_blank" rel="noopener" data-cat="reklam">
+        <figure><img src="img/1076161360.jpg" alt="Travego" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Travego</h3><span>Reklam Filmi · 2025</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/1075846154" target="_blank" rel="noopener" data-cat="kampanya">
+        <figure><img src="img/1075846154.jpg" alt="Radar" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Radar</h3><span>Kampanya Filmi · 2025</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/1026926983" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/1026926983.jpg" alt="Gold — Kahvaltı" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Gold — Kahvaltı</h3><span>TVC · 2024</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/988344939" target="_blank" rel="noopener" data-cat="kampanya">
+        <figure><img src="img/988344939.jpg" alt="19 Mayıs" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>19 Mayıs</h3><span>Kampanya Filmi · 2024</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/987970109" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/987970109.jpg" alt="Tutku — Fotoğraf" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Tutku — Fotoğraf</h3><span>TVC · 2024</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/987967888" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/987967888.jpg" alt="Tutku — Kavuşma" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Tutku — Kavuşma</h3><span>TVC · 2024</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/941991091" target="_blank" rel="noopener" data-cat="belgesel">
+        <figure><img src="img/941991091.jpg" alt="Earth Day" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Earth Day</h3><span>Tanıtım Filmi · 2024</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/941988813" target="_blank" rel="noopener" data-cat="kampanya">
+        <figure><img src="img/941988813.jpg" alt="BLOK3" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>BLOK3</h3><span>Kampanya Filmi · 2024</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/937740899" target="_blank" rel="noopener" data-cat="kampanya">
+        <figure><img src="img/937740899.jpg" alt="M Lisa" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>M Lisa</h3><span>Kampanya Filmi · 2024</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/937739804" target="_blank" rel="noopener" data-cat="kampanya">
+        <figure><img src="img/937739804.jpg" alt="Mert Demir" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Mert Demir</h3><span>Kampanya Filmi · 2024</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/937739441" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/937739441.jpg" alt="Burcu Esmersoy" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Burcu Esmersoy</h3><span>TVC · 2024</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/879357916" target="_blank" rel="noopener" data-cat="belgesel">
+        <figure><img src="img/879357916.jpg" alt="Objektifin Ardı: Atatürk — Teaser" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Objektifin Ardı: Atatürk — Teaser</h3><span>Belgesel · 2023</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/874609785" target="_blank" rel="noopener" data-cat="kampanya">
+        <figure><img src="img/874609785.jpg" alt="Spotify" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Spotify</h3><span>Kampanya Filmi · 2023</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/874596204" target="_blank" rel="noopener" data-cat="reklam">
+        <figure><img src="img/874596204.jpg" alt="DS Automobiles × National Geographic" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>DS Automobiles × National Geographic</h3><span>İş Birliği · 2023</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/874592032" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/874592032.jpg" alt="DS 7" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>DS 7</h3><span>TVC · 2023</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/870999251" target="_blank" rel="noopener" data-cat="reklam">
+        <figure><img src="img/870999251.jpg" alt="Ziraat Bankası" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Ziraat Bankası</h3><span>Reklam Filmi · 2023</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/870010279" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/870010279.jpg" alt="Kızılay Maden Suyu" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Kızılay Maden Suyu</h3><span>TVC · 2023</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/821675102" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/821675102.jpg" alt="Şahin Güvencesi" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Şahin Güvencesi</h3><span>TVC · 2023</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/821663421" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/821663421.jpg" alt="Şahin Güvencesiyle Pastırma" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Şahin Güvencesiyle Pastırma</h3><span>TVC · 2023</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/791980415" target="_blank" rel="noopener" data-cat="muzik">
+        <figure><img src="img/791980415.jpg" alt="Gökcan Sanlıman — Sihirli Ojeler" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Gökcan Sanlıman — Sihirli Ojeler</h3><span>Müzik Videosu · 2023</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/786236710" target="_blank" rel="noopener" data-cat="belgesel">
+        <figure><img src="img/786236710.jpg" alt="Survivor 2023 — Teaser" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Survivor 2023 — Teaser</h3><span>Tanıtım Filmi · 2023</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/777454713" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/777454713.jpg" alt="beIN Sports" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>beIN Sports</h3><span>TVC · 2022</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/777450770" target="_blank" rel="noopener" data-cat="tvc">
+        <figure><img src="img/777450770.jpg" alt="beIN Sports II" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>beIN Sports II</h3><span>TVC · 2022</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/760595246" target="_blank" rel="noopener" data-cat="belgesel">
+        <figure><img src="img/760595246.jpg" alt="Bugün Var, Yarın Yok Olmasın!" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Bugün Var, Yarın Yok Olmasın!</h3><span>Farkındalık · 2022</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/722619919" target="_blank" rel="noopener" data-cat="belgesel">
+        <figure><img src="img/722619919.jpg" alt="Zirvedeki Türküler" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Zirvedeki Türküler</h3><span>Belgesel · 2022</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/685525817" target="_blank" rel="noopener" data-cat="muzik">
+        <figure><img src="img/685525817.jpg" alt="Pelaçık" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>Pelaçık</h3><span>Moda Filmi · 2022</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/685406160" target="_blank" rel="noopener" data-cat="kampanya">
+        <figure><img src="img/685406160.jpg" alt="8 Mart Dünya Kadınlar Günü" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>8 Mart Dünya Kadınlar Günü</h3><span>Kampanya Filmi · 2022</span></div>
+      </a>
+
+      <a class="work fade" href="https://vimeo.com/562852925" target="_blank" rel="noopener" data-cat="kampanya">
+        <figure><img src="img/562852925.jpg" alt="19 Mayıs — Tanısan Severdin" loading="lazy"><span class="go" aria-hidden="true">↗</span></figure>
+        <div class="cap"><h3>19 Mayıs — Tanısan Severdin</h3><span>Kampanya Filmi · 2021</span></div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- MÜŞTERİLER -->
+<section class="clients-band" id="musteriler">
+  <div class="wrap">
+    <div class="sec-head fade">
+      <h2>Müşteriler</h2>
+      <span class="label">Referanslar</span>
+    </div>
+    <div class="marquee fade">
+      <div class="track">
+        <div class="set">
+          <img src="img/logos/thy.png" alt="Turkish Airlines" loading="lazy">
+          <img src="img/logos/mercedes.png" alt="Mercedes-Benz" loading="lazy">
+          <img src="img/logos/samsung.png" alt="Samsung" loading="lazy">
+          <img src="img/logos/spotify.png" alt="Spotify" loading="lazy">
+          <img src="img/logos/natgeo.png" alt="National Geographic" loading="lazy">
+          <img src="img/logos/ds.png" alt="DS Automobiles" loading="lazy">
+          <img src="img/logos/ziraat.png" alt="Ziraat Bankası" loading="lazy">
+          <img src="img/logos/kizilay.png" alt="Kızılay" loading="lazy">
+          <img src="img/logos/akkok.png" alt="Akkök Holding" loading="lazy">
+          <img src="img/logos/acarhome.png" alt="Acar Home" loading="lazy">
+          <img src="img/logos/servisplan.png" alt="Servisplan" loading="lazy">
+          <img src="img/logos/d_trt.png" alt="TRT" loading="lazy">
+        </div>
+        <div class="set" aria-hidden="true">
+          <img src="img/logos/thy.png" alt="" loading="lazy">
+          <img src="img/logos/mercedes.png" alt="" loading="lazy">
+          <img src="img/logos/samsung.png" alt="" loading="lazy">
+          <img src="img/logos/spotify.png" alt="" loading="lazy">
+          <img src="img/logos/natgeo.png" alt="" loading="lazy">
+          <img src="img/logos/ds.png" alt="" loading="lazy">
+          <img src="img/logos/ziraat.png" alt="" loading="lazy">
+          <img src="img/logos/kizilay.png" alt="" loading="lazy">
+          <img src="img/logos/akkok.png" alt="" loading="lazy">
+          <img src="img/logos/acarhome.png" alt="" loading="lazy">
+          <img src="img/logos/servisplan.png" alt="" loading="lazy">
+          <img src="img/logos/d_trt.png" alt="" loading="lazy">
+        </div>
+      </div>
+    </div>
+    <p class="clients-note fade">
+      Türkiye'nin ve dünyanın önde gelen markaları için reklam, marka filmi,
+      kampanya ve belgesel projelerinde görüntü yönetmenliği.
+    </p>
+  </div>
+</section>
+
+<!-- İLETİŞİM -->
+<footer id="iletisim">
+  <div class="wrap">
+    <p class="label fade">İletişim</p>
+    <a class="big fade" href="https://wa.me/905448635959?text=Merhaba%20Do%C4%9Fukan%2C%20bir%20proje%20i%C3%A7in%20g%C3%B6r%C3%BC%C5%9Fmek%20isterim." target="_blank" rel="noopener">
+      Birlikte <em>çalışalım</em> ↗
+    </a>
+    <div class="contact-row fade">
+      <div class="item">
+        <p class="k">WhatsApp</p>
+        <a class="v" href="https://wa.me/905448635959?text=Merhaba%20Do%C4%9Fukan%2C%20bir%20proje%20i%C3%A7in%20g%C3%B6r%C3%BC%C5%9Fmek%20isterim." target="_blank" rel="noopener">+90 544 863 59 59</a>
+      </div>
+      <div class="item">
+        <p class="k">E-posta</p>
+        <a class="v" href="mailto:ince@newdayfilmworks.com">ince@newdayfilmworks.com</a>
+      </div>
+      <div class="item">
+        <p class="k">Arşiv</p>
+        <a class="v" href="https://vimeo.com/dodogukan" target="_blank" rel="noopener">vimeo.com/dodogukan</a>
+      </div>
+    </div>
+    <div class="foot-row fade">
+      <span>Doğukan İnce (dodo) — Görüntü Yönetmeni</span>
+      <a href="https://vimeo.com/dodogukan" target="_blank" rel="noopener">vimeo.com/dodogukan</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add("js");
+
+/* Nav: kaydırınca koyulaş */
+const nav = document.getElementById("nav");
+addEventListener("scroll", () => nav.classList.toggle("solid", scrollY > 40), { passive: true });
+
+/* Filtre */
+const buttons = document.querySelectorAll(".filter-btn");
+const cards = document.querySelectorAll(".work");
+buttons.forEach(btn => btn.addEventListener("click", () => {
+  buttons.forEach(b => {
+    b.classList.toggle("active", b === btn);
+    b.setAttribute("aria-pressed", b === btn);
+  });
+  const f = btn.dataset.f;
+  cards.forEach(c => c.classList.toggle("hide", f !== "all" && c.dataset.cat !== f));
+}));
+
+/* Kaydırma reveal */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); obs.unobserve(e.target); } });
+}, { threshold: .1 });
+document.querySelectorAll(".fade").forEach(el => obs.observe(el));
+
+/* Sigorta: gözlemci tetiklenmezse bile her şey görünür olsun */
+setTimeout(() => document.querySelectorAll(".fade").forEach(el => el.classList.add("in")), 2500);
+</script>
+</body>
+</html>
