@@ -280,6 +280,43 @@ section{padding:clamp(5rem,10vw,8.5rem) clamp(1.5rem,5vw,4rem)}
 }
 
 /* ============================================================
+   VİDEO OYNATICI — site içi lightbox
+   ============================================================ */
+.lightbox{
+  position:fixed;inset:0;z-index:400;display:none;
+  align-items:center;justify-content:center;
+  padding:clamp(1rem,5vw,4rem);
+  background:rgba(6,6,7,.94);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.lightbox.open{display:flex;animation:lbIn .35s ease}
+@keyframes lbIn{from{opacity:0}to{opacity:1}}
+.lightbox .box{width:min(1180px,100%)}
+.lightbox .frame{
+  position:relative;width:100%;aspect-ratio:16/9;background:#000;
+  border:1px solid var(--line);
+}
+.lightbox .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.lightbox .bar{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:2rem;margin-bottom:1.1rem;
+}
+.lightbox .bar h3{
+  font-family:var(--serif);font-weight:400;font-size:clamp(1.1rem,2.4vw,1.75rem);
+  line-height:1.2;
+}
+.lightbox .bar .meta{
+  font-size:.68rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--muted);margin-top:.5rem;
+}
+.lightbox .close{
+  font-size:.68rem;font-weight:500;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--muted);flex:none;transition:color .3s;
+}
+.lightbox .close:hover{color:var(--gold)}
+body.locked{overflow:hidden}
+
+/* ============================================================
    FOOTER
    ============================================================ */
 footer{padding:clamp(6rem,13vw,10rem) clamp(1.5rem,5vw,4rem) 2.5rem}
@@ -648,6 +685,20 @@ footer .foot-row a:hover{color:var(--gold)}
   </div>
 </footer>
 
+<!-- VİDEO OYNATICI -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Video oynatıcı">
+  <div class="box">
+    <div class="bar">
+      <div>
+        <h3 id="lbTitle"></h3>
+        <p class="meta" id="lbMeta"></p>
+      </div>
+      <button class="close" id="lbClose" type="button">Kapat ✕</button>
+    </div>
+    <div class="frame" id="lbFrame"></div>
+  </div>
+</div>
+
 <script>
 document.documentElement.classList.add("js");
 
@@ -675,6 +726,50 @@ document.querySelectorAll(".fade").forEach(el => obs.observe(el));
 
 /* Sigorta: gözlemci tetiklenmezse bile her şey görünür olsun */
 setTimeout(() => document.querySelectorAll(".fade").forEach(el => el.classList.add("in")), 2500);
+
+/* Video: Vimeo'ya gitmek yerine site içinde oynat */
+const lb = document.getElementById("lightbox");
+const lbFrame = document.getElementById("lbFrame");
+const lbTitle = document.getElementById("lbTitle");
+const lbMeta = document.getElementById("lbMeta");
+let lastCard = null;
+
+function openLightbox(card) {
+  const id = (card.href.match(/vimeo\.com\/(\d+)/) || [])[1];
+  if (!id) return false;
+  lastCard = card;
+  lbTitle.textContent = card.querySelector(".cap h3").textContent;
+  lbMeta.textContent = card.querySelector(".cap span").textContent;
+  lbFrame.innerHTML =
+    '<iframe src="https://player.vimeo.com/video/' + id +
+    '?autoplay=1&title=0&byline=0&portrait=0&dnt=1" ' +
+    'allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+  lb.classList.add("open");
+  lb.setAttribute("aria-hidden", "false");
+  document.body.classList.add("locked");
+  document.getElementById("lbClose").focus();
+  return true;
+}
+
+function closeLightbox() {
+  lb.classList.remove("open");
+  lb.setAttribute("aria-hidden", "true");
+  lbFrame.innerHTML = "";           // oynatmayı durdurur
+  document.body.classList.remove("locked");
+  if (lastCard) { lastCard.focus(); lastCard = null; }
+}
+
+cards.forEach(card => card.addEventListener("click", e => {
+  /* Cmd/Ctrl/orta tık: yeni sekmede Vimeo'da açılsın */
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+  if (openLightbox(card)) e.preventDefault();
+}));
+
+document.getElementById("lbClose").addEventListener("click", closeLightbox);
+lb.addEventListener("click", e => { if (e.target === lb) closeLightbox(); });
+addEventListener("keydown", e => {
+  if (e.key === "Escape" && lb.classList.contains("open")) closeLightbox();
+});
 </script>
 </body>
 </html>
